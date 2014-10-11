@@ -1,0 +1,252 @@
+-nsp->// -*- Mode: scilab -*-
+-nsp->// Copyright (C) 2014-2014 Jean-Philippe Chancelier Enpc/Cermics
+-nsp->//
+-nsp->// This program is free software; you can redistribute it and/or modify
+-nsp->// it under the terms of the GNU General Public License as published by
+-nsp->// the Free Software Foundation; either version 2 of the License, or
+-nsp->// (at your option) any later version.
+-nsp->//
+-nsp->// This program is distributed in the hope that it will be useful,
+-nsp->// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-nsp->// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-nsp->// GNU General Public License for more details.
+-nsp->//
+-nsp->// You should have received a copy of the GNU General Public License
+-nsp->// along with this program; if not, write to the Free Software
+-nsp->// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+-nsp->//
+-nsp->// a set of examples compared with linprog 
+-nsp->load_toolbox('nspcplex');
+-nsp->libname='nspcplex'
+-nsp->libtitle='nspcplex toolbox';
+-nsp->// macros. 
+-nsp->//add_lib('macros',compile=%t);
+-nsp->// loader for src 
+-nsp->exec('src/loader.sce');
+-nsp->// this loader is not generated 
+-nsp->// we have added the global=%t option 
+-nsp->// because some other dynamic libraries 
+-nsp->// may want to use symbols defined internally here.
+-nsp->libcplex_path=file('join',['.','libcplex'+%shext]);
+-nsp->addinter(libcplex_path,'libcplex',global=%t);
+-nsp->clear libcplex_path;
+-nsp->clear libcplex_path;
+-nsp->printf(libtitle+' loaded\n');
+nspcplex toolbox loaded
+-nsp->// example 1 
+-nsp->//-----------
+-nsp->c= [50; 40; 70; 80]; 
+-nsp->A = [ 2 4 8  6; 
+==>      10 8 6 10; 
+==>      1 1 2  2]; 
+-nsp->b = [100; 160;  20]; 
+-nsp->[xopt,fopt,flag,extra] = linprog(c,A,b,[],[],sense="max");
+-nsp->// Take care that default value for lb is 0 and ub = %inf 
+-nsp->// check optimality conditions 
+-nsp->L=extra.lambda;
+-nsp->T= and(-c + A'*L >= 0) && (-c+A'*L)'*xopt == 0 && L'*(A*xopt-b) == 0 ;
+-nsp->if ~T then pause;end 
+-nsp->// check optimal cost and dual cost 
+-nsp->if L'*b <> c'*xopt then pause;end
+-nsp->// check optimal cost
+-nsp->if fopt <> c'*xopt then pause;end 
+-nsp->if fopt <> 920 then pause;end 
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,[],[],sense="max");
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// example 2 
+-nsp->//---------- 
+-nsp->c = -[6 5];                
+-nsp->A = [1,4; 6,4; 2,-5];      
+-nsp->b = [16;28;6];    
+-nsp->lb = [0;0];                
+-nsp->ub = [10;10];
+-nsp->[xopt,fopt,flag,extra] = linprog(c,A,b,[],[],ub=ub,lb=lb,sense="min");
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,[],[],ub=ub,lb=lb,sense="min");
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// example 3
+-nsp->//------------
+-nsp->c = -[1 2 3];
+-nsp->A = [-1 , 1 , 1; 
+==>     1 , -3 , 1];
+-nsp->Ae=[1  1  1];
+-nsp->b = [20;30];
+-nsp->be=40;
+-nsp->lb = [0;0;0];
+-nsp->ub = [40;%inf;%inf];
+-nsp->[xopt,fopt,flag,extra] = linprog(c,A,b,Ae,be,ub=ub,lb=lb,sense="min");
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,Ae,be,ub=ub,lb=lb,sense="min");
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// We code here in nsp the problems used for coinmp test
+-nsp->//-----------------------------------------------------
+-nsp->// CoinTest 
+-nsp->//----------
+-nsp->objectConst = 0.0;
+-nsp->n=8;
+-nsp->m=5;
+-nsp->c = ones(1,8);
+-nsp->lb = 0*ones(1,n);
+-nsp->ub = 1000000*ones(1,n);
+-nsp->// char rowType[5] = [ 'L', 'L', 'L', 'L', 'L' ];
+-nsp->b = [14., 80., 50., 50., 50.];
+-nsp->beg=[0,2,4,6,8,10,11,12,14];
+-nsp->count=[2,2,2,2,2,1,1,2];
+-nsp->ind=[0,4,0,1,1,2,0,3,0,4,2,3,0,4];
+-nsp->val=[3., 5.6, 1., 2., 1.1, 1., -2., 2.8, -1., 1., 1., -1.2, -1., 1.9];
+-nsp->A=spfrommtlb(beg,ind,val,[m,n]);
+-nsp->optimalValue = 1428729.2857143;
+-nsp->[xopt,fopt,flag,extra] = linprog(c,A,b,[],[],ub=ub,lb=lb,sense="max");
+-nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,sparse([]),[],ub=ub,lb=lb,sense="max");
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// "Bakery"
+-nsp->// --------
+-nsp->n=2;
+-nsp->m=3;
+-nsp->cte=  - 4000.0 / 30.0;
+-nsp->c =[ 0.05 , 0.08];
+-nsp->lb =[ 0, 0 ];
+-nsp->ub =[ 1000000, 1000000 ];
+-nsp->b =[1400 , 8000 , 5000 ];
+-nsp->beg =  [ 0 , 2, 4 ];
+-nsp->ind =  [ 0, 1, 0, 2];
+-nsp->val =  [ 0.1, 1, 0.2, 1];
+-nsp->A=spfrommtlb(beg,ind,val,[m,n]);
+-nsp->optimalValue = 506.66666667 -cte ;
+-nsp->[xopt,fopt,flag,extra] = linprog(c,A,b,[],[],ub=ub,lb=lb,sense="max");
+-nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,sparse([]),[],ub=ub,lb=lb,sense="max");
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// Afiro
+-nsp->//-------
+-nsp->n = 32;
+-nsp->m = 27;
+-nsp->sense = "min";
+-nsp->c =[0, -0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.32, 0, 0, 0, -0.6, ... 
+==>    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.48, 0, 0, 10];
+-nsp->lb = zeros(1,n);
+-nsp->ub = %inf*ones(1,n);
+-nsp->ct = ['E', 'E', 'L', 'L', 'E', 'E', 'L', 'L', 'L', 'L', 'E', 'E', 'L', ...
+==>      'L', 'E', 'E', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'];
+-nsp->b = [0, 0, 80, 0, 0, 0, 80, 0, 0, 0, 0, 0, 500, 0, 0, 44, 500, 0, ...
+==>		0, 0, 0, 0, 0, 0, 0, 310, 300];
+-nsp->beg = [0, 4, 6, 8, 10, 14, 18, 22, 26, 28, 30, 32, 34, 36, 38, 40, ...
+==>       44, 46, 48, 50, 52, 56, 60, 64, 68, 70, 72, 74, 76, 78, 80, 82, ...
+==>       83];
+-nsp->ind=[0, 1, 2, 23, 0, 3, 0, 21, 1, 25, 4, 5, 6, 24, 4, 5, 7, 24, 4, 5, ...
+==>     8, 24, 4, 5, 9, 24, 6, 20, 7, 20, 8, 20, 9, 20, 3, 4, 4, 22, 5, 26, 10, 11, ...
+==>     12, 21, 10, 13, 10, 23, 10, 20, 11, 25, 14, 15, 16, 22, 14, 15, 17, 22, 14, ...
+==>     15, 18, 22, 14, 15, 19, 22, 16, 20, 17, 20, 18, 20, 19, 20, 13, 15, 15, 24, ...
+==>     14, 26, 15];
+-nsp->val =[-1, -1.06, 1, 0.301, 1, -1, 1, -1, 1, 1, -1, -1.06, 1, 0.301, ...
+==>      -1, -1.06, 1, 0.313, -1, -0.96, 1, 0.313, -1, -0.86, 1, 0.326, -1, 2.364, -1, ...
+==>      2.386, -1, 2.408, -1, 2.429, 1.4, 1, 1, -1, 1, 1, -1, -0.43, 1, 0.109, 1, -1, ...
+==>      1, -1, 1, -1, 1, 1, -0.43, 1, 1, 0.109, -0.43, 1, 1, 0.108, -0.39, 1, 1, ...
+==>      0.108, -0.37, 1, 1, 0.107, -1, 2.191, -1, 2.219, -1, 2.249, -1, 2.279, 1.4, ...
+==>      -1, 1, -1, 1, 1, 1];
+-nsp->optimalValue = -464.753142857;
+-nsp->A=spfrommtlb(beg,ind,val,[m,n]);
+-nsp->Eq=find(ct == 'E');
+-nsp->Ae=A(Eq,:);be=b(Eq);
+-nsp->Lq=find(ct == 'L');
+-nsp->Al=A(Lq,:);bl=b(Lq);
+-nsp->[xopt,fopt,flag,extra] = linprog(c,A,b,[],[],ub=ub,lb=lb,sense=sense);
+-nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,sparse([]),[],ub=ub,lb=lb,sense=sense);
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->// XXX if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// [xopt1,fopt1,flag1,extra2] = linprog_clp(c,A,b,sparse([]),[],ub=ub,lb=lb,sense=sense);
+-nsp->// if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->// if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->// if norm(extra2- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->[xopt,fopt,flag,extra] = linprog(c,Al,bl,Ae,be,ub=ub,lb=lb,sense=sense);
+-nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,Al,bl,Ae,be,ub=ub,lb=lb,sense=sense);
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->// if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+-nsp->// P0033
+-nsp->//--------
+-nsp->n = 33;
+-nsp->m = 15;
+-nsp->sense = "min";
+-nsp->c = [171, 171, 171, 171, 163, 162, 163, 69, 69, 183, 183, 183, ...
+==>     183, 49, 183, 258, 517, 250, 500, 250, 500, 159, 318, 159, 318, 159, 318, 159, ...
+==>     318, 114, 228, 159, 318];
+-nsp->lb= zeros(1,n);
+-nsp->ub= ones(1,n);
+-nsp->b=[1, 1, 1, 1, -5, 2700, -2600, -100, -900, -1656, -335, -1026, -5, -500, -270];
+-nsp->beg=[0, 3, 6, 10, 14, 19, 24, 26, 31, 36, 38, 41, 45, 49, 53, 54, ...
+==>     55, 56, 58, 60, 61, 62, 66, 70, 73, 76, 80, 84, 87, 90, 93, 96, 97, 98];
+-nsp->ind=[0, 8, 9, 0, 12, 13, 0, 5, 6, 9, 0, 5, 6, 7, 1, 5, 6, 10, 11, 1, ...
+==>		5, 6, 8, 9, 1, 14, 2, 5, 6, 10, 11, 2, 5, 6, 8, 9, 3, 4, 3, 10, 11, 3, 5, 6, ...
+==>		11, 3, 5, 6, 9, 5, 6, 8, 9, 3, 4, 4, 12, 13, 12, 13, 13, 13, 5, 6, 10, 11, 5, ...
+==>		6, 10, 11, 5, 6, 11, 5, 6, 11, 5, 6, 8, 9, 5, 6, 8, 9, 5, 6, 9, 5, 6, 9, 5, 6, ...
+==>		7, 5, 6, 7, 14, 14];
+-nsp->val=[1, -300, -300, 1, -300, -300, 1, 300, -300, -300, 1, 300, ...
+==>     -300, -300, 1, 285, -285, -285, -285, 1, 285, -285, -285, -285, 1, -285, 1, ...
+==>     265, -265, -265, -265, 1, 265, -265, -265, -265, 1, -230, 1, -230, -230, 1, ...
+==>     230, -230, -230, 1, 230, -230, -230, 190, -190, -190, -190, 1, -200, -400, ...
+==>     -200, -200, -400, -400, -200, -400, 200, -200, -200, -200, 400, -400, -400, ...
+==>     -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, -200, 400, -400, ...
+==>     -400, -400, 200, -200, -200, 400, -400, -400, 200, -200, -200, 400, -400, ...
+==>     -400, -200, -400];
+-nsp->ctyp = smat_create(1,n,"B");
+-nsp->A=spfrommtlb(beg,ind,val,[m,n]);
+-nsp->Ae=sparse([]);
+-nsp->be =[];
+-nsp->optimalValue = 3089.0;
+-nsp->ctyp = smat_create(1,n,"B"); 
+-nsp->[xopt,fopt,flag] = linprog(c,A,b,Ae,be,binprog=%t,sense=sense);
+-nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,Ae,be,var_type=ctyp, sense=sense);
+-nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->// Exmip1
+-nsp->//--------------------------
+-nsp->n = 8;
+-nsp->m= 5;
+-nsp->// objectname = "z";
+-nsp->sense = "min";
+-nsp->objconst = 0.0;
+-nsp->c=[1, 0, 0, 0, 2, 0, 0, -1];
+-nsp->lb=[2.5, 0, 0, 0, 0.5, 0, 0, 0];
+-nsp->ub=[%inf, 4.1, %inf, %inf, 4, %inf, %inf, 4.3];
+-nsp->// char rtyp[5]= ['G', 'L', 'E', 'G', 'L'];
+-nsp->b=[2.5, 2.1, 4, 1.8, 15];
+-nsp->//drng[5]=[0, 0, 0, -3.2, 12];
+-nsp->beg=[0, 2, 4, 6, 8, 10, 11, 12, 14];
+-nsp->ind=[0, 4, 0, 1, 1, 2, 0, 3, 0, 4, 2, 3, 0, 4];
+-nsp->val=[3, 5.6, 1, 2, 1.1, 1, -2, 2.8, -1, 1, 1, -1.2, -1, 1.9];
+-nsp->ctyp = [ 'C', 'C', 'B', 'B', 'C', 'C', 'C', 'C'];
+-nsp->A=spfrommtlb(beg,ind,val,[m,n]);
+-nsp->Ae=A(3,:);be=b(3);
+-nsp->A=[-A(1,:);A(2,:);-A(4,:);A(5,:)];
+-nsp->b=[-b(1);b(2);-b(4);b(5)];
+-nsp->optimalValue = 3.23684210526;
+-nsp->// no 'B' in linprog 
+-nsp->// we use I with extra bounds 
+-nsp->ctyp1 = [ 'C', 'C', 'I', 'I', 'C', 'C', 'C', 'C'];
+-nsp->ub1=ub;ub1(3:4)=1;
+-nsp->[xopt,fopt,flag] = linprog(c,A,b,Ae,be,var_type=ctyp1,ub=ub1,lb=lb,sense=sense);
+-nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
+-nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,Ae,be,ub=ub,lb=lb, ...
+==>					   var_type=ctyp, sense=sense);
+-nsp->// here xopt and xopt1 are optimal but not the same
+-nsp->// if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+-nsp->// GamsSos1a
+-nsp->// Sos variables
+-nsp->//----------------------------------
+-nsp->// GamsSos2a
+-nsp->// Sos variables XXXX
+-nsp->// ----------------------------------
+-nsp->// char* probname = "SemiCont";
+-nsp->// --------------------------------
