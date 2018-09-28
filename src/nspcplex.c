@@ -66,7 +66,7 @@ int nsp_cplex_solve(const char* problemName, int sense, int ncols, int nrows, in
   int status;
   int cur_numrows,cur_numcols;
   double *dj=NULL,*slack=NULL;
-  int solstat;
+  int solstat=0;
   double objval;
   int ret = FAIL;
 
