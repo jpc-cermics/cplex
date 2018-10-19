@@ -9,7 +9,7 @@ CPLEX=/opt/ibm/ILOG/CPLEX_Studio126/cplex
 CPLEX_INC= -I /opt/ibm/ILOG/CPLEX_Studio126/cplex/include 
 CPLEX_LIB= -L/opt/ibm/ILOG/CPLEX_Studio126/cplex/bin/x86_linux/ -Wl,-R$(CPLEX)/bin/x86_linux -lcplex1260 -lpthread 
 
-OBJS= nspcplex-In.o nspcplex.o stochdeclp.o stochdeclp_cplex.o
+OBJS= nspcplex-In.o nspcplex.o 
 
 include $(SCIDIR)/Makefile.incl
 
