@@ -10,7 +10,7 @@ LIBRARY=libcplex.lib
 
 CPLEX=/opt/ibm/ILOG/CPLEX_Studio126/cplex
 CPLEX_INC= -I /opt/ibm/ILOG/CPLEX_Studio126/cplex/include 
-CPLEX_LIB= -L/opt/ibm/ILOG/CPLEX_Studio126/cplex/bin/x86_linux/ -Wl,-R$(CPLEX)/bin/x86_linux -lcplex1260 -lpthread 
+CPLEX_LIB= -L/opt/ibm/ILOG/CPLEX_Studio126/cplex/bin/x86-64_linux/ -Wl,-R$(CPLEX)/bin/x86-64_linux -lcplex1260 -lpthread 
 
 OBJS= nspcplex-In.obj nspcplex.obj 
 

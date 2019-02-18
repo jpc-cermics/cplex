@@ -1,4 +1,4 @@
-// -*- Mode: scilab -*-
+// -*- Mode: nsp -*-
 // Copyright (C) 2014-2014 Bruno Pinçon ESIAL/IECN
 //
 // This program is free software; you can redistribute it and/or modify

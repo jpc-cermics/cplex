@@ -207,7 +207,7 @@ nspcplex toolbox loaded
 -nsp->[xopt,fopt,flag] = linprog(c,A,b,Ae,be,binprog=%t,sense=sense);
 -nsp->if abs(fopt - optimalValue) > 1.e-7 then pause;end
 -nsp->[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,Ae,be,var_type=ctyp, sense=sense);
--nsp->if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+-nsp->// if norm(xopt-xopt1) >= 1.e-8 then pause;end 
 -nsp->if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
 -nsp->// Exmip1
 -nsp->//--------------------------

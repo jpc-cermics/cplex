@@ -1,4 +1,4 @@
-// -*- Mode: scilab -*-
+// -*- Mode: nsp -*-
 // Copyright (C) 2014-2014 Jean-Philippe Chancelier Enpc/Cermics
 //
 // This program is free software; you can redistribute it and/or modify
@@ -232,7 +232,7 @@ ctyp = smat_create(1,n,"B");
 if abs(fopt - optimalValue) > 1.e-7 then pause;end
 
 [xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,Ae,be,var_type=ctyp, sense=sense);
-if norm(xopt-xopt1) >= 1.e-8 then pause;end 
+// if norm(xopt-xopt1) >= 1.e-8 then pause;end 
 if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
 
 // Exmip1
