@@ -1,4 +1,4 @@
--nsp->// -*- Mode: scilab -*-
+-nsp->// -*- Mode: nsp -*-
 -nsp->// Copyright (C) 2014-2014 Bruno Pinçon ESIAL/IECN
 -nsp->//
 -nsp->// This program is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@
 -nsp->clear libcplex_path;
 -nsp->printf(libtitle+' loaded\n');
 nspcplex toolbox loaded
+Automatic loading of toolbox nspcplex is inserted in your startup file ~/.nsp/startup.sce
 -nsp->/////////////////////////////////////////////////////////////////////////////////
 -nsp->// test 1-1:   max c'*x
 -nsp->//             Ax <= b

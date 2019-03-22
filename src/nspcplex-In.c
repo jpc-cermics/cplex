@@ -74,6 +74,7 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
     return RET_BUG;
   */
 
+  /* optional argument sense : min or max default min */
   if ( strcmp(sense_str,"min") == 0 )
     sense = 0;
   else if ( strcmp(sense_str,"max") == 0 )
@@ -83,6 +84,8 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
       Scierror("Error: sense should be 'min' or 'max'\n");
       return RET_BUG;
     }
+
+  /* Matrix A and Ae : both sparses or both not sparses */
   
   if ( IsMat(ObjA) &&  IsMat(ObjAe))
     {
@@ -121,6 +124,8 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
   ncols = Objective->mn; /* Length of c == number of columns*/
   nrows = Rhs->mn + Rhse->mn ; /* length of b == number of rows*/
 
+  /* SemiCont : to be done */
+  
   if ( SemiCont != NULL) 
     {
       Scierror("Error: not yet implemented in cplex interface \n");
@@ -137,8 +142,7 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
       for ( i= 0 ; i < SemiCont->mn ; i++) Sc[i]= SemiCont->R[i] -1 ;
     }
   
-  /* extra matrix requested by coinmp 
-   * which counts number of non-null elements in each column 
+  /* Cmatcount: extra matrix which counts number of non-null elements in each column 
    */
 
   if ( ( Cmatcount = nsp_imatrix_create(NVOID,1,ncols,nsp_gint32)) == NULLIMAT )
