@@ -5,7 +5,6 @@ SCIDIR1=..\..\..
 
 LIBRARY=libcplex.a
 
-
 CPLEX=/opt/ibm/ILOG/CPLEX_Studio201/cplex
 CPLEXLIB=-lcplex2010
 
