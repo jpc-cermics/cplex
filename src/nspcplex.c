@@ -1,5 +1,5 @@
 /* Nsp
- * Copyright (C) 2014-2014 Jean-Philippe Chancelier ENPC/Cermics
+ * Copyright (C) 2014-2022 Jean-Philippe Chancelier ENPC/Cermics
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public

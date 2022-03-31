@@ -1,5 +1,5 @@
 // -*- Mode: nsp -*-
-// Copyright (C) 2014-2014 Bruno Pinçon ESIAL/IECN
+// Copyright (C) 2014-2022 Bruno Pinçon ESIAL/IECN
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

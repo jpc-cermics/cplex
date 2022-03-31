@@ -5,9 +5,12 @@ SCIDIR1=..\..\..
 
 LIBRARY=libcplex.a
 
-CPLEX=/opt/ibm/ILOG/CPLEX_Studio126/cplex
-CPLEX_INC= -I /opt/ibm/ILOG/CPLEX_Studio126/cplex/include 
-CPLEX_LIB= -L/opt/ibm/ILOG/CPLEX_Studio126/cplex/bin/x86-64_linux/ -Wl,-R$(CPLEX)/bin/x86-64_linux -lcplex1260 -lpthread 
+
+CPLEX=/opt/ibm/ILOG/CPLEX_Studio201/cplex
+CPLEXLIB=-lcplex2010
+
+CPLEX_INC= -I $(CPLEX)/include 
+CPLEX_LIB= -L$(CPLEX)/bin/x86-64_linux/ -Wl,-R$(CPLEX)/bin/x86-64_linux $(CPLEXLIB)
 
 OBJS= nspcplex-In.o nspcplex.o 
 
