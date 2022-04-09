@@ -344,7 +344,7 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
   if ( SemiCont != NULL) nsp_matrix_destroy(SemiCont);
 
   if ( columnType != NULL) nsp_string_destroy(&columnType);
-  if ( rowType != NULL) nsp_string_destroy(&columnType);
+  if ( rowType != NULL) nsp_string_destroy(&rowType);
 
   if ( save_only == TRUE ) 
     {
