@@ -40,6 +40,7 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
   NspMatrix *Cmatval=NULL;
   NspObject *ObjA,*ObjAe;
   NspMatrix *Objective, *Rhs, *Rhse, *B, *Lhs, *lb=NULL, *ub=NULL;
+  int lb_local=FALSE, ub_local=FALSE;
   NspMatrix *SemiCont = NULL;
 
   NspIMatrix *Qmatbeg=NULL,*Qmatcnt=NULL,*Qmatind=NULL;
@@ -217,6 +218,7 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
       for (i = 0; i < ncols; i++){
 	lb->R[i] = 0; /* to fit with glpk - cplex_dbl_max; */
       }
+      lb_local = TRUE;
     }
   else
     {
@@ -237,7 +239,8 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
 	return RET_BUG;
       for (i = 0; i < ncols; i++){
 	ub->R[i] = cplex_dbl_max;
-     }        
+      }
+      ub_local = TRUE;
     }
   else
     {
@@ -339,10 +342,11 @@ int int_cplex_solve(Stack stack, int rhs, int opt, int lhs)
 
   nsp_matrix_destroy(B);
   nsp_matrix_destroy(Lhs);
-  nsp_matrix_destroy(lb);
-  nsp_matrix_destroy(ub);
-  if ( SemiCont != NULL) nsp_matrix_destroy(SemiCont);
+  if ( lb_local == TRUE) nsp_matrix_destroy(lb);
+  if ( ub_local == TRUE) nsp_matrix_destroy(ub);
 
+  if ( SemiCont != NULL) nsp_matrix_destroy(SemiCont);
+  
   if ( columnType != NULL) nsp_string_destroy(&columnType);
   if ( rowType != NULL) nsp_string_destroy(&rowType);
 
