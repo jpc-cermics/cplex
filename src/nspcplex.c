@@ -155,7 +155,7 @@ int nsp_cplex_solve(const char* problemName, int sense, int ncols, int nrows, in
       status = CPXwriteprob (env, lp, filename, NULL);
       if ( status ) 
 	{
-	  fprintf (stderr, "CPXwriteprob failed.\n");
+	  Scierror("CPXwriteprob failed.\n");
 	  goto error;
 	}
     }
@@ -213,8 +213,6 @@ int nsp_cplex_solve(const char* problemName, int sense, int ncols, int nrows, in
     Scierror("objective value not available\n");
     goto error;
   }
-  cur_numrows = CPXgetnumrows (env, lp);
-  cur_numcols = CPXgetnumcols (env, lp);
   
   status = CPXgetx (env, lp, X->R, 0, cur_numcols-1);
   if ( status ) {
@@ -258,7 +256,7 @@ int nsp_cplex_solve(const char* problemName, int sense, int ncols, int nrows, in
      {
        status = CPXfreeprob (env, &lp);
        if ( status ) {
-	 Sciprintf("CPXfreeprob failed, error code %d.\n", status);
+	 Scierror("CPXfreeprob failed, error code %d.\n", status);
 	 ret = FAIL;
        }
      }
@@ -317,8 +315,7 @@ int nsp_cplex_set_method(CPXENVptr env, char c)
     method = CPX_ALG_BARRIER;
     status = CPXsetintparam (env, CPXPARAM_Barrier_Crossover, CPX_ALG_NONE);
     if ( status ) {
-      fprintf (stderr, 
-	       "Failed to set the crossover method, error %d.\n", status);
+      Scierror("Failed to set the crossover method, error %d.\n", status);
       return FAIL;
     }
     break;
@@ -334,8 +331,7 @@ int nsp_cplex_set_method(CPXENVptr env, char c)
   }
   status = CPXsetintparam (env, CPXPARAM_LPMethod, method);
   if ( status ) {
-    fprintf (stderr, 
-	     "Failed to set the optimization method, error %d.\n", status);
+    Scierror("Failed to set the optimization method, error %d.\n", status);
     return FAIL;
   }
   return OK;
