@@ -42,18 +42,30 @@ if fopt <> c'*xopt then pause;end
 if fopt <> 920 then pause;end 
 
 [xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,[],[],sense="max");
+// check optimality conditions 
+L=extra1;
+T= and(-c + A'*L >= 0) && (-c+A'*L)'*xopt1 == 0 && L'*(A*xopt1-b) == 0 ;
+if ~T then pause;end 
+// check optimal cost and dual cost 
+if L'*b <> c'*xopt1 then pause;end
 if norm(xopt-xopt1) >= 1.e-8 then pause;end 
 if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
 
 // example 2 
 //---------- 
-c = -[6 5];                
+c = -[6;5];                
 A = [1,4; 6,4; 2,-5];      
 b = [16;28;6];    
 lb = [0;0];                
 ub = [10;10];
 
 [xopt,fopt,flag,extra] = linprog(c,A,b,[],[],ub=ub,lb=lb,sense="min");
+// check optimality conditions 
+L=extra.lambda;
+T= and(-c + A'*L >= 0) && abs((-c+A'*L)'*xopt) < 1.e-8 && abs(L'*(A*xopt-b)) < 1.e-8 ;
+if ~T then pause;end 
+// check optimal cost and dual cost 
+if abs(L'*b - c'*xopt) > 1.e-8 then pause;end
 [xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,[],[],ub=ub,lb=lb,sense="min");
 if norm(xopt-xopt1) >= 1.e-8 then pause;end 
 if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
