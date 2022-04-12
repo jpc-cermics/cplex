@@ -7,6 +7,8 @@ LIBRARY=libcplex.a
 
 CPLEX=/opt/ibm/ILOG/CPLEX_Studio201/cplex
 CPLEXLIB=-lcplex2010
+CPLEX=/opt/ibm/ILOG/CPLEX_Studio221/cplex
+CPLEXLIB=-lcplex2210
 
 CPLEX_INC= -I $(CPLEX)/include 
 CPLEX_LIB= -L$(CPLEX)/bin/x86-64_linux/ -Wl,-R$(CPLEX)/bin/x86-64_linux $(CPLEXLIB)

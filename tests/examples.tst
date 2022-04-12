@@ -147,16 +147,16 @@ if norm(extra1- extra.lambda) >= 1.e-8 then pause;end
 n = 32;
 m = 27;
 sense = "min";
-c =[0, -0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.32, 0, 0, 0, -0.6, ... 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.48, 0, 0, 10];
+c =[0; -0.4; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; -0.32; 0; 0; 0; -0.6; ... 
+    0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; -0.48; 0; 0; 10];
 lb = zeros(1,n);
 ub = %inf*ones(1,n);
 
 ct = ['E', 'E', 'L', 'L', 'E', 'E', 'L', 'L', 'L', 'L', 'E', 'E', 'L', ...
       'L', 'E', 'E', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'];
 
-b = [0, 0, 80, 0, 0, 0, 80, 0, 0, 0, 0, 0, 500, 0, 0, 44, 500, 0, ...
-		0, 0, 0, 0, 0, 0, 0, 310, 300];
+b = [0; 0; 80; 0; 0; 0; 80; 0; 0; 0; 0; 0; 500; 0; 0; 44; 500; 0; ...
+		0; 0; 0; 0; 0; 0; 0; 310; 300];
 beg = [0, 4, 6, 8, 10, 14, 18, 22, 26, 28, 30, 32, 34, 36, 38, 40, ...
        44, 46, 48, 50, 52, 56, 60, 64, 68, 70, 72, 74, 76, 78, 80, 82, ...
        83];
@@ -181,26 +181,22 @@ Ae=A(Eq,:);be=b(Eq);
 Lq=find(ct == 'L');
 Al=A(Lq,:);bl=b(Lq);
 
-[xopt,fopt,flag,extra] = linprog(c,A,b,[],[],ub=ub,lb=lb,sense=sense);
-if abs(fopt - optimalValue) > 1.e-7 then pause;end
-
-[xopt1,fopt1,flag1,extra1] = linprog_cplex(c,A,b,sparse([]),[],ub=ub,lb=lb,sense=sense);
-if norm(xopt-xopt1) >= 1.e-8 then pause;end 
-if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
-// XXX if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
-
-// [xopt1,fopt1,flag1,extra2] = linprog_clp(c,A,b,sparse([]),[],ub=ub,lb=lb,sense=sense);
-// if norm(xopt-xopt1) >= 1.e-8 then pause;end 
-// if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
-// if norm(extra2- extra.lambda) >= 1.e-8 then pause;end 
-
 [xopt,fopt,flag,extra] = linprog(c,Al,bl,Ae,be,ub=ub,lb=lb,sense=sense);
 if abs(fopt - optimalValue) > 1.e-7 then pause;end
 
 [xopt1,fopt1,flag1,extra1] = linprog_cplex(c,Al,bl,Ae,be,ub=ub,lb=lb,sense=sense);
 if norm(xopt-xopt1) >= 1.e-8 then pause;end 
 if abs(fopt1 - optimalValue) > 1.e-7 then pause;end
+// lambda is not unique
 // if norm(extra1- extra.lambda) >= 1.e-8 then pause;end 
+
+A=[Al;Ae];b=[bl;be];
+L=extra.lambda;
+T= and(-c + A'*L >= 0) && (-c+A'*L)'*xopt == 0 && L'*(A*xopt-b) == 0 ;
+if ~T then pause;end 
+L=extra1
+T= and(-c + A'*L >= 0) && (-c+A'*L)'*xopt == 0 && L'*(A*xopt-b) == 0 ;
+if ~T then pause;end
 
 // P0033
 //--------
