@@ -1,7 +1,7 @@
 SHELL=/bin/sh
 MFLAGS=-s --no-print-directory
 
-include ../../Path.incl
+include Path.incl
 include $(SCIDIR)/Makefile.incl
 
 all :: builder.sce

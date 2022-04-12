@@ -3,9 +3,6 @@
 # -----------------------------
 SHELL = /bin/sh
 
-SCIDIR=../../..
-SCIDIR1=..\..\..
-
 LIBRARY=libcplex.lib
 
 CPLEX=/opt/ibm/ILOG/CPLEX_Studio201/cplex
@@ -18,6 +15,7 @@ CPLEX_LIB= -L$(CPLEX)/bin/x86-64_linux/ -Wl,-R$(CPLEX)/bin/x86-64_linux $(CPLEXL
 
 OBJS= nspcplex-In.obj nspcplex.obj 
 
+include ../Path.incl
 include $(SCIDIR)/Makefile.incl.mak
 
 CFLAGS = $(CC_OPTIONS) $(CPLEX_INC)

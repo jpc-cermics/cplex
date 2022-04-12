@@ -5,7 +5,7 @@ libname='nspcplex'
 // generate Path.incl file 
 // -----------------------
 
-ilib_path_incl()
+ilib_path_incl(relative=%f)
 
 // compile shared library in src.
 // ------------------------------

@@ -1,7 +1,7 @@
 SHELL=/bin/csh
 .SUFFIXES: .dia .tst .vl
 
-SCIDIR=../../../
+include ../Path.incl
 
 TESTS= linprog.dia examples.dia
 
