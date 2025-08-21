@@ -17,7 +17,7 @@
 //
 // a set of examples compared with linprog 
 
-load_toolbox('nspcplex');
+load_toolbox('cplex');
 
 // example 1 
 //-----------

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-load_toolbox('nspcplex');
+load_toolbox('cplex');
 
 /////////////////////////////////////////////////////////////////////////////////
 // test 1-1:   max c'*x

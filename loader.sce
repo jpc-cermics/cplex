@@ -1,5 +1,5 @@
-libname='nspcplex'
-libtitle='nspcplex toolbox';
+libname='cplex'
+libtitle='cplex toolbox';
 
 // macros. 
 //add_lib('macros',compile=%t);
